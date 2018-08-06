@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 
@@ -71,8 +72,14 @@ int main() {
     printf(" server Accept Client. Let's Chat. (Client first)\n");
 
     /* 6. Chat */ 
-    valread = read(new_socket, buffer, 1024);
+    recv(new_socket, buffer, 1024, 0);
+    /*
+    while( (recv(new_socket, buffer, 1024, 0) ) == -1 ) {
+        printf("%s\n", buffer);
+    }*/
+    //valread = read(new_socket, buffer, 1024);
     printf("%s\n", buffer);
+    printf(" send!!!!!!");
     send(new_socket, msg, strlen(msg), 0);
 
     printf("exit main without ERROR\n");
