@@ -48,6 +48,8 @@ int main() {
         printf("binding error\n");
         return 0;
     }
+    
+    printf(" server listening... \n");
 
     /* 4. Listen */
     // int listen(int sockfd, int backlog);
@@ -56,7 +58,9 @@ int main() {
         printf("listen...\n");
         return 0;
     }
-    
+   
+    printf(" server listen!... Ready for accept\n");
+
     /* 5. Accept */
     // int = accept(int sockfd, sockaddr* addr, addlen);
     if( new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*) &addLen) < 0) {
@@ -64,8 +68,9 @@ int main() {
         return 0;
     }
     
-    /* 6. Chat */ 
+    printf(" server Accept Client. Let's Chat. (Client first)\n");
 
+    /* 6. Chat */ 
     valread = read(new_socket, buffer, 1024);
     printf("%s\n", buffer);
     send(new_socket, msg, strlen(msg), 0);
@@ -74,5 +79,3 @@ int main() {
 
     return 0;
 }
-// 충돌 나라 
-// conflict solved?
