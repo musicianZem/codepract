@@ -47,22 +47,6 @@ int main() {
         if( buffer[0] == '!' ) break;
 
         int N = write(sockfd, buffer, strlen(buffer));
-        if( N < 0 ) { 
-            cout << "Writing to Socket Problem" << endl;
-            cout << sockfd << " " << buffer << " " << strlen(buffer) << endl;
-            return 0;
-        }
-        bzero(buffer, 256);
-        N = read(sockfd, buffer, 255);
-        if( N < 0 ) {
-            cout << "Reading from Socket Problem" << endl;
-            return 0;
-        }
-        if( buffer[0] == '!' ) {
-            cout << "Server quit Chat" << endl;
-            break;
-        }
-        cout << "Server : " << buffer << endl;
     }
 
     close(sockfd);

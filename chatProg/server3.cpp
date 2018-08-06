@@ -39,7 +39,7 @@ int main() {
         return 0;
     }
 
-    while( true ) {
+    while( buffer[0] != '!' ) {
         bzero(buffer, 256);
         int N = read(new_sockfd, buffer, 255);
         if( N < 0 ) {
@@ -47,19 +47,7 @@ int main() {
             return 0;
         }
 
-        if( buffer[0] == '!' ) {
-            cout << "Client quit Chat" << endl;
-            break;
-        }
-
-        cout << "Client >> " << buffer << endl;
-
-        bzero(buffer, 256);
-        cout << "Enter Message to Client : ";
-        scanf("%s", buffer);
-
-        N = write(new_sockfd, buffer, strlen(buffer));
-        if( buffer[0] == '!' ) break;
+        cout << buffer << " Received\n";
     }
     close(new_sockfd);
     close(sockfd);
