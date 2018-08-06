@@ -40,7 +40,7 @@ int main() {
 
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(8080);
+    address.sin_port = htons(PORT);
     /* 3. Binding */
     // int bind(int sockfd, sockaddr* addr, addrlen);
     // bind(server_fd, address, addLen);
