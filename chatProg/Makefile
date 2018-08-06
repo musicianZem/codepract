@@ -1,0 +1,17 @@
+CC = g++
+SERVER_OBJS = server2.o
+CLIENT_OBJS = client2.o 
+SERVER_TARGET = client
+CLIENT_TARGET = server
+ 
+.SUFFIXES : .c .o
+ 
+all : $(SERVER_TARGET) $(CLIENT_TARGET)
+ 
+$(SERVER_TARGET): $(SERVER_OBJS)
+	$(CC) -o $@ $(SERVER_OBJS)
+$(CLIENT_TARGET): $(CLIENT_OBJS)
+	$(CC) -o $@ $(CLIENT_OBJS)
+ 
+clean :
+	rm -f $(SERVER_OBJS) $(SERVER_TARGET) $(CLIENT_OBJS) $(CLIENT_TARGET)
