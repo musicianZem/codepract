@@ -1,6 +1,6 @@
 CC = g++
-SERVER_OBJS = server2.o
-CLIENT_OBJS = client2.o 
+SERVER_OBJS = server.o
+CLIENT_OBJS = client.o 
 SERVER_TARGET = client
 CLIENT_TARGET = server
  
@@ -14,4 +14,4 @@ $(CLIENT_TARGET): $(CLIENT_OBJS)
 	$(CC) -o $@ $(CLIENT_OBJS)
  
 clean :
-	rm -f $(SERVER_OBJS) $(SERVER_TARGET) $(CLIENT_OBJS) $(CLIENT_TARGET)
+	rm -f $(SERVER_OBJS) $(CLIENT_OBJS)

@@ -1,95 +1,81 @@
+#include <stdio.h>
+#include <iostream>
+#include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 
-const int PORT = 8080;
+using namespace std;
 
-/*
-    1. Create Socket
-    2. Set Socket
-    3. Bind
-    4. Listen
-    5. Accept
-    6. Chat
-*/
 int main() {
-    sockaddr_in address;
-    int addLen = sizeof(address);
+    int portNO = 8000;
+    char buffer[256];
+    struct sockaddr_in serv_addr, cli_addr;
+
+    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+
     int opt = 1;
-    int server_fd, new_socket, valread;
-    char buffer[1024]={0}; 
-    const char *msg = "Some Message...!!!@@@AAA";
-    /* 1. Create Socket */
-    // socket(domain, type, protocol)
-    // server_fd = socket(AF_INET, SOCK_STREAM, 0)
-    if( (server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0 ) {
-        printf("make socket error\n");
-        return 0;
-    }
-
-    bzero((char*)&address, sizeof(address));
-    address.sin_family = AF_INET;
-    address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(PORT);
-    /* 2. set Socket */
-    // int setsocket(int sockfd, int level, int optName, optval, optlen)
-    // setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt));
-    /*if( setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)) ) {
-        printf("socket setting error\n");
-        return 0;
-    }*/
-
-    address.sin_family = AF_INET;
-    address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(PORT);
-    /* 3. Binding */
-    // int bind(int sockfd, sockaddr* addr, addrlen);
-    // bind(server_fd, address, addLen);
-    if( bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0 ) {
-        printf("binding error\n");
-        return 0;
-    }
-    
-    printf(" server listening... \n");
-
-    /* 4. Listen */
-    // int listen(int sockfd, int backlog);
-    // listen(server_fd, over 3 integer);
-    if( listen(server_fd, 5) < 0 ) {
-        printf("listen...\n");
-        return 0;
-    }
+    setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
    
-    printf(" server listen!... Ready for accept\n");
-
-    /* 5. Accept */
-    // int = accept(int sockfd, sockaddr* addr, addlen);
-    if( new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*) &addLen) < 0) {
-        printf("Accept.........\n");
+    if( sockfd < 0 ) {
+        cout << "Create Socket Problem" << endl;
         return 0;
     }
-    
-    printf(" server Accept Client. Let's Chat. (Client first)\n");
 
-    memset(buffer, 0, sizeof(buffer));
-    /* 6. Chat */ 
-    recv(new_socket, buffer, 100, 0);
-    int bufCount = 0;
-//    while( (recv(new_socket, buffer, 1024, 0) ) == -1 ) {
-//        printf("%s\n", buffer);
-//    }
-    printf(" b u f f e r c n t = %d \n", bufCount);
-    //valread = read(new_socket, buffer, 1024);
-    printf("Client >> %s\n", buffer);
-    printf(" Buffer SZ = %d", strlen(buffer));
-    printf(" send!!!!!!");
-    send(new_socket, msg, strlen(msg), 0);
+    cout << "Socket Created\n";
 
-    printf("exit main without ERROR\n");
+    bzero((char *) &serv_addr, sizeof(serv_addr));
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_addr.s_addr = INADDR_ANY;
+    serv_addr.sin_port = htons(portNO);
 
+
+    int bindStatus = bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr));
+    if( bindStatus < 0 ) {
+        cout << "Binding Problem" << endl;
+        return 0;
+    }
+
+    cout << "Binding Correctly\n";
+    cout << "Waiting for Client.....\n";
+
+    listen(sockfd, 5);
+    socklen_t clientLen = sizeof(cli_addr);
+    int new_sockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clientLen);
+    if( new_sockfd < 0 ) {
+        cout << "Accept Problem" << endl;
+        return 0;
+    }
+
+    cout << "Client join this PORT for chat..\n";
+    cout << "Client will Send some Message. Answer the Question.\n";
+
+    while( true ) {
+        bzero(buffer, 256);
+        int N = read(new_sockfd, buffer, 255);
+        if( N < 0 ) {
+            cout << "Reading from Socket Problem" << endl;
+            return 0;
+        }
+
+        if( buffer[0] == '!' ) {
+            cout << "Client quit Chat" << endl;
+            break;
+        }
+
+        cout << "Client >> " << buffer << endl;
+
+        cout << "Enter Message to Client : ";
+        bzero(buffer, 256);
+        scanf("%s", buffer);
+
+        N = write(new_sockfd, buffer, strlen(buffer));
+        
+        if( buffer[0] == '!' ) break;
+    }
+    close(new_sockfd);
+    close(sockfd);
     return 0;
 }
