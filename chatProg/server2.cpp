@@ -57,8 +57,7 @@ int main() {
         cout << "Client >> " << buffer << endl;
         cout << "Enter Message to Client : ";
         bzero(buffer, 256);
- //       getline(&buffer, 256, stdin);
-        cin >> buffer;
+        scanf("%s", buffer);
 
         N = write(new_sockfd, buffer, strlen(buffer));
 
