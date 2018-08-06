@@ -13,6 +13,7 @@ using namespace std;
 int main() {
     int portNO = 8000;
 
+    size_t bufferSize = 256;
     struct sockaddr_in serv_addr;
     struct hostent *server;
 
@@ -45,8 +46,9 @@ int main() {
         if( buffer[0] == '!' ) break;
 
         int N = write(sockfd, buffer, strlen(buffer));
-        if( N < 0 ) {
+        if( N < 0 ) { 
             cout << "Writing to Socket Problem" << endl;
+            cout << sockfd << " " << buffer << " " << strlen(buffer) << endl;
             return 0;
         }
         bzero(buffer, 256);
