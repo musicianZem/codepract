@@ -69,6 +69,9 @@ int main() {
 
         cout << packet->msg << endl;
         write(sockfd, (void *)packet, sizeof(packet)<<2);
+        // I have to load char* member's pointer value.
+        // but write function's second parameter cannot allow (*(void *) arr) type...
+        // i cannot solved.. 
 
         cout << "Send Packet : " << packet->msg << endl;
     }
