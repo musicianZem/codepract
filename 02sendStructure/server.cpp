@@ -16,8 +16,7 @@ using namespace std;
 
 typedef struct {
     int msgLength;
-    char msg[100];
-    int msgID;
+    char *msg;
 }__attribute__((packed)) mPacket;
 
 void exitWithError(const char* errMsg) {
@@ -69,26 +68,19 @@ int main() {
     cout << "Client will Send some Message. Answer the Question.\n";
     int pSize = 0;
 
-    mPacket *p = new mPacket;
+    mPacket p;
 
-    char buf[100];
+    char *buf = new char[101];
     while(true) {
-        memset(buf, 0, sizeof(buf));
-        int pSize = read(new_sockfd, (void *)& buf, 100);
 
-        for(int i=0; i<100; i++) {
-            printf("%c", (char)buf[i]);
-        }
+        //read(new_sockfd, (void *)buf, 101);
+
+
+        int n = read(new_sockfd, (void *) buf, sizeof(char *) * 101);
+        cout << "!";
+        printf("%s\n", buf);
         cout << endl;
-        p = (mPacket *)buf;
-        
-        if( pSize == 0 ) break;
-        if( pSize > 0 ) {
-            cout << p->msgLength << endl;
-            cout << p->msg << endl;
-            cout << p->msgID << endl;
-        }
-        cout << " unit end\n";
+
     }
 
     close(new_sockfd);

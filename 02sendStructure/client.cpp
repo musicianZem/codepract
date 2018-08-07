@@ -17,8 +17,7 @@ using namespace std;
 
 typedef struct {
     int msgLength;
-    char msg[100];
-    int msgID;
+    char *msg;
 }__attribute__((packed)) mPacket;
 
 void exitWithError(const char* errMsg) {
@@ -59,20 +58,41 @@ int main() {
 
     cout << "Connected Server. Welcome\n";
 
+
+
+
+
+
+
     int msgID = 0;
-    mPacket *packet = new mPacket;
+    mPacket packet;
+
+    char *arr = new char[101];
+
     while( true ) {
-        scanf("%s", packet->msg);
-        packet->msgID = msgID++;
-        packet->msgLength = sizeof(*packet);
-        cout << packet->msgLength << endl;
+        string s; getline(cin, s);
+        int L = s.length();
 
-        cout << packet->msg << endl;
-        write(sockfd, (void *)packet, sizeof(packet));
+        char *arr = new char[L+1];
+        for(int i=0; i<L; i++) {
+            arr[i] = s[i];
+        }
+        arr[L] = '\0';
 
-        cout << "Send Packet : " << packet->msg << endl;
+        // input    // pass for practice
+        // change to char *
+        // write( sockfd, (void *) arr , len ); // len : sizeof( char* ) * count is right
+        printf("%s is inserted\n", arr);
+
+        write( sockfd, (void *) arr, L);
     }
 
     close(sockfd);
     return 0;
 }
+
+
+
+
+
+
