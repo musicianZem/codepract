@@ -72,14 +72,10 @@ int main() {
 
     char *buf = new char[101];
     while(true) {
-
-        //read(new_sockfd, (void *)buf, 101);
-
+        memset(buf, 0, sizeof(char*) * 101);
 
         int n = read(new_sockfd, (void *) buf, sizeof(char *) * 101);
-        cout << "!";
-        printf("%s\n", buf);
-        cout << endl;
+        printf(">>%s\n", buf);
 
     }
 

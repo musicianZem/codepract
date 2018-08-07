@@ -67,24 +67,28 @@ int main() {
     int msgID = 0;
     mPacket packet;
 
-    char *arr = new char[101];
+    //char *arr = new char[101];
 
     while( true ) {
         string s; getline(cin, s);
         int L = s.length();
 
-        char *arr = new char[L+1];
+        //char *arr = new char[L+1];
+        packet.msg = new char[L+1];
+
         for(int i=0; i<L; i++) {
-            arr[i] = s[i];
+            //arr[i] = s[i];
+            packet.msg = new char[L+1];
         }
-        arr[L] = '\0';
 
-        // input    // pass for practice
-        // change to char *
-        // write( sockfd, (void *) arr , len ); // len : sizeof( char* ) * count is right
-        printf("%s is inserted\n", arr);
+        //arr[L] = '\0';
+        packet.msg[L] = '\0';
 
-        write( sockfd, (void *) arr, L);
+        //printf("%s is inserted\n", arr);
+        printf("%s is inserted\n", packet.msg);
+
+        //write( sockfd, (void *) arr, L);
+        write( sockfd, (void *) packet.msg, L);
     }
 
     close(sockfd);
