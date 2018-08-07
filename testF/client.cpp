@@ -64,11 +64,11 @@ int main() {
     while( true ) {
         scanf("%s", packet->msg);
         packet->msgID = msgID++;
-        packet->msgLength = sizeof(*packet);
+        packet->msgLength = sizeof(*packet); // fixed
         cout << packet->msgLength << endl;
 
         cout << packet->msg << endl;
-        write(sockfd, (void *)packet, sizeof(packet));
+        write(sockfd, (void *)packet, sizeof(packet)<<2);
 
         cout << "Send Packet : " << packet->msg << endl;
     }

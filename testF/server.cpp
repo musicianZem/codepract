@@ -74,12 +74,12 @@ int main() {
     char buf[100];
     while(true) {
         memset(buf, 0, sizeof(buf));
-        int pSize = read(new_sockfd, (void *)& buf, 100);
-
-        for(int i=0; i<100; i++) {
+        int pSize = read(new_sockfd, (void *)& buf, sizeof(buf));
+        for(int i=0; i<sizeof(buf); i++) {
             printf("%c", (char)buf[i]);
         }
-        cout << endl;
+        cout << "!\n";
+        cout << "2" << endl;
         p = (mPacket *)buf;
         
         if( pSize == 0 ) break;
