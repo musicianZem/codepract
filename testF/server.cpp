@@ -72,21 +72,40 @@ int main() {
     mPacket *p = new mPacket;
 
     while(true) {
-        char buf[5];
+        char *buf = new char[5];
         memset(buf, 0, sizeof(buf));
         cout << endl << endl << "wait for client..\n";
-        int pSize = read(new_sockfd, (void *)&buf, 4);
-        if( pSize == 4 ) {
-            pSize = atoi(buf);
-        }
+        int pSize = read(new_sockfd, (void *)buf, 4);
+        cout << buf << endl;
+
+        pSize = atoi(buf);
 
         cout << "pSize = " << pSize << endl;
 
         int packetSize = (int)buf[0];
+        if( packetSize == 0 ) break;
         cout << "receive packet Size = " << packetSize << endl;
-        cout << "rec = " << buf << endl;
+        
+        free(buf);
+        buf = new char[packetSize];
+        pSize = read(new_sockfd, (void *)buf, packetSize);
+        char const *newText = buf;
+
+        printf("%s", (char*)buf);
+        cout << "\n...\n";
+        for(int i=0; i < packetSize; i++) {
+            printf("%c",(char)buf[i]);
+        }
+        cout << "\n...\n";
+        for(int i=0; i<packetSize; i++) {
+            printf("%x", buf[i]);
+        }
+
+
+        cout << "\nend\n";
 
         int charSize = 1;
+        free(buf);
 
         /*p = (mPacket *)buf;
         if( pSize > 0 ) {

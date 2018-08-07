@@ -77,12 +77,9 @@ int main() {
         cout << "-- send list--\n";
         cout << "msg Length = " << packet->msgLength << endl;
         cout << "inner Message = " << packet->msg << endl;
-        cout << "sizeof packet = " << sizeof(packet) << endl;
-        cout << "sizeof *packet= " << sizeof(*packet) << endl;
         cout << "-- end of info --\n";
 
-
-        write(sockfd, (void *)packet, sizeof(packet));
+        write(sockfd, (char *)packet, sizeof(packet));
         free(packet->msg);
     }
 
