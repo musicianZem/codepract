@@ -62,7 +62,6 @@ int main() {
     int msgID = 0;
     mPacket *packet = new mPacket;
     while( true ) {
-        cout << "Enter Msg: ";
         scanf("%s", packet->msg);
         packet->msgID = msgID++;
         packet->msgLength = sizeof(*packet);

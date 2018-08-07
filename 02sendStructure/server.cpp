@@ -15,28 +15,15 @@
 using namespace std;
 
 typedef struct {
-    string msg;
+    int msgLength;
+    char msg[100];
     int msgID;
-} SendStruct;
+}__attribute__((packed)) mPacket;
 
 void exitWithError(const char* errMsg) {
     printf("%s\n", errMsg);
     exit(-1);
 }
-
-string getMsg() {
-    cout << "Enter Msg :";
-    string str;
-    getline(cin, str);
-    return str;
-}
-
-void makeMsgStruct(SendStruct &msgStruct) {
-    static int id = 0;
-    msgStruct.msgID = id++;
-    msgStruct.msg = getMsg();
-}
-
 
 int main() {
     int portNO = 8000;
@@ -80,19 +67,30 @@ int main() {
 
     cout << "Client join this PORT for chat..\n";
     cout << "Client will Send some Message. Answer the Question.\n";
+    int pSize = 0;
 
-    SendStruct *msg = new SendStruct;
-    while( true ) {
-        char buf[1000];
-        recv(sockfd, &buf, sizeof(buf), 0);
-        msg = (SendStruct* )buf;
-            //exitWithError("Reading from Socket Problem");
-        cout << "Client >> " << msg->msg << endl;
+    mPacket *p = new mPacket;
 
-        makeMsgStruct(*msg);
-        cout << "send msg - " << msg->msg << endl;
-        sendto(sockfd, &msg, sizeof(msg), 0, (struct sockaddr *) &cli_addr, sizeof(cli_addr));
+    char buf[100];
+    while(true) {
+        memset(buf, 0, sizeof(buf));
+        int pSize = read(new_sockfd, (void *)& buf, 100);
+
+        for(int i=0; i<100; i++) {
+            printf("%c", (char)buf[i]);
+        }
+        cout << endl;
+        p = (mPacket *)buf;
+        
+        if( pSize == 0 ) break;
+        if( pSize > 0 ) {
+            cout << p->msgLength << endl;
+            cout << p->msg << endl;
+            cout << p->msgID << endl;
+        }
+        cout << " unit end\n";
     }
+
     close(new_sockfd);
     close(sockfd);
     return 0;
