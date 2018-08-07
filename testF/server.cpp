@@ -16,7 +16,7 @@ using namespace std;
 
 typedef struct {
     int msgLength;
-    char msg[100];
+    char *msg;
     int msgID;
 } mPacket;
 
@@ -72,23 +72,27 @@ int main() {
     mPacket *p = new mPacket;
 
     while(true) {
-        char buf[100];
+        char buf[5];
         memset(buf, 0, sizeof(buf));
-        for(int i=0; i<100; i++) {
-            printf("%x ", buf[i]);
-            
+        cout << endl << endl << "wait for client..\n";
+        int pSize = read(new_sockfd, (void *)&buf, 4);
+        if( pSize == 4 ) {
+            pSize = atoi(buf);
         }
-        cout << endl << endl;
-        int pSize = read(new_sockfd, (void *)& buf, 100);
-        for(int i=0; i<100; i++) {
-            printf("%c ", (char)buf[i]);
-            
-        }
-        p = (mPacket *)buf;
+
+        cout << "pSize = " << pSize << endl;
+
+        int packetSize = (int)buf[0];
+        cout << "receive packet Size = " << packetSize << endl;
+        cout << "rec = " << buf << endl;
+
+        int charSize = 1;
+
+        /*p = (mPacket *)buf;
         if( pSize > 0 ) {
             cout << p->msg << endl;
         }
-        cout << " unit end\n";
+        cout << " unit end\n";*/
     }
 
     close(new_sockfd);

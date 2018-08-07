@@ -17,9 +17,9 @@ using namespace std;
 
 typedef struct {
     int msgLength;
-    char msg[100];
+    char *msg;
     int msgID;
-} mPacket;
+} __attribute__((packed)) mPacket;
 
 void exitWithError(const char* errMsg) {
     printf("%s\n", errMsg);
@@ -63,15 +63,27 @@ int main() {
     mPacket *packet = new mPacket;
     while( true ) {
         cout << "Enter Msg: ";
-        scanf("%s", packet->msg);
-        packet->msgID = 102345;
-        packet->msgLength = sizeof(*packet);
-        cout << packet->msgLength << endl;
+        string str; getline(cin, str);
 
-        cout << packet->msg << endl;
+        // copy string to char*
+        int strL = str.length();
+        packet->msg = new char[strL + 1];
+        for(int i=0; i<strL; i++) packet->msg[i] = str[i];
+        packet->msg[strL] = '\0'; // if not, some hide error occurs..
+
+        packet->msgID = msgID++;
+        packet->msgLength = strlen(packet->msg) + (sizeof(int)<<1);
+
+        cout << "-- send list--\n";
+        cout << "msg Length = " << packet->msgLength << endl;
+        cout << "inner Message = " << packet->msg << endl;
+        cout << "sizeof packet = " << sizeof(packet) << endl;
+        cout << "sizeof *packet= " << sizeof(*packet) << endl;
+        cout << "-- end of info --\n";
+
+
         write(sockfd, (void *)packet, sizeof(packet));
-
-        cout << "Send Packet : " << packet->msg << endl;
+        free(packet->msg);
     }
 
     close(sockfd);
