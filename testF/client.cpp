@@ -17,9 +17,9 @@ using namespace std;
 
 typedef struct {
     int msgLength;
-    char *msg;
+    char msg[100];
     int msgID;
-} __attribute__((packed)) mPacket;
+}__attribute__((packed)) mPacket;
 
 void exitWithError(const char* errMsg) {
     printf("%s\n", errMsg);
@@ -63,24 +63,15 @@ int main() {
     mPacket *packet = new mPacket;
     while( true ) {
         cout << "Enter Msg: ";
-        string str; getline(cin, str);
-
-        // copy string to char*
-        int strL = str.length();
-        packet->msg = new char[strL + 1];
-        for(int i=0; i<strL; i++) packet->msg[i] = str[i];
-        packet->msg[strL] = '\0'; // if not, some hide error occurs..
-
+        scanf("%s", packet->msg);
         packet->msgID = msgID++;
-        packet->msgLength = strlen(packet->msg) + (sizeof(int)<<1);
+        packet->msgLength = sizeof(*packet);
+        cout << packet->msgLength << endl;
 
-        cout << "-- send list--\n";
-        cout << "msg Length = " << packet->msgLength << endl;
-        cout << "inner Message = " << packet->msg << endl;
-        cout << "-- end of info --\n";
+        cout << packet->msg << endl;
+        write(sockfd, (void *)packet, sizeof(packet));
 
-        write(sockfd, (char *)packet, sizeof(packet));
-        free(packet->msg);
+        cout << "Send Packet : " << packet->msg << endl;
     }
 
     close(sockfd);

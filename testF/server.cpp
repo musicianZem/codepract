@@ -16,9 +16,9 @@ using namespace std;
 
 typedef struct {
     int msgLength;
-    char *msg;
+    char msg[100];
     int msgID;
-} mPacket;
+}__attribute__((packed)) mPacket;
 
 void exitWithError(const char* errMsg) {
     printf("%s\n", errMsg);
@@ -71,47 +71,24 @@ int main() {
 
     mPacket *p = new mPacket;
 
+    char buf[100];
     while(true) {
-        char *buf = new char[5];
         memset(buf, 0, sizeof(buf));
-        cout << endl << endl << "wait for client..\n";
-        int pSize = read(new_sockfd, (void *)buf, 4);
-        cout << buf << endl;
+        int pSize = read(new_sockfd, (void *)& buf, 100);
 
-        pSize = atoi(buf);
-
-        cout << "pSize = " << pSize << endl;
-
-        int packetSize = (int)buf[0];
-        if( packetSize == 0 ) break;
-        cout << "receive packet Size = " << packetSize << endl;
+        for(int i=0; i<100; i++) {
+            printf("%c", (char)buf[i]);
+        }
+        cout << endl;
+        p = (mPacket *)buf;
         
-        free(buf);
-        buf = new char[packetSize];
-        pSize = read(new_sockfd, (void *)buf, packetSize);
-        char const *newText = buf;
-
-        printf("%s", (char*)buf);
-        cout << "\n...\n";
-        for(int i=0; i < packetSize; i++) {
-            printf("%c",(char)buf[i]);
-        }
-        cout << "\n...\n";
-        for(int i=0; i<packetSize; i++) {
-            printf("%x", buf[i]);
-        }
-
-
-        cout << "\nend\n";
-
-        int charSize = 1;
-        free(buf);
-
-        /*p = (mPacket *)buf;
+        if( pSize == 0 ) break;
         if( pSize > 0 ) {
+            cout << p->msgLength << endl;
             cout << p->msg << endl;
+            cout << p->msgID << endl;
         }
-        cout << " unit end\n";*/
+        cout << " unit end\n";
     }
 
     close(new_sockfd);
