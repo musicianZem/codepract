@@ -16,9 +16,10 @@
 using namespace std;
 
 typedef struct {
-    string msg;
+    int msgLength;
+    char msg[100];
     int msgID;
-} SendStruct;
+} mPacket;
 
 void exitWithError(const char* errMsg) {
     printf("%s\n", errMsg);
@@ -27,19 +28,6 @@ void exitWithError(const char* errMsg) {
 
 int getSocketDescriptor() {
     return socket(AF_INET, SOCK_STREAM, 0);
-}
-
-string getMsg() {
-    cout << "Enter Msg for send : ";
-    string str;
-    getline(cin, str);
-    return str;
-}
-
-void makeMsgStruct(SendStruct &msgStruct) {
-    static int id = 0;
-    msgStruct.msg = getMsg();
-    msgStruct.msgID = id++;
 }
 
 int main() {
@@ -72,28 +60,18 @@ int main() {
     cout << "Connected Server. Welcome\n";
 
     int msgID = 0;
-    SendStruct *msg = new SendStruct;
-    getchar();
+    mPacket *packet = new mPacket;
     while( true ) {
-        makeMsgStruct(*msg);
+        cout << "Enter Msg: ";
+        scanf("%s", packet->msg);
+        packet->msgID = 102345;
+        packet->msgLength = sizeof(*packet);
+        cout << packet->msgLength << endl;
 
-        cout << msg->msg << endl;
-        send(sockfd, msg, sizeof(*msg), 0);
-        int N = 0;
-        if( N < 0 ) { 
-            exitWithError("Writing to Socket Problem");
-        }
+        cout << packet->msg << endl;
+        write(sockfd, (void *)packet, sizeof(packet));
 
-        cout << ">>";
-
-        char buf[1000];
-        recv(sockfd, &buf, sizeof(buf), 0);
-        msg = (SendStruct *)buf;
-//        N = read(sockfd, buffer, 255);
-        if( N < 0 ) {
-            exitWithError("Reading from Socket Problem");
-        }
-        cout << "receive : " << msg->msg << endl;
+        cout << "Send Packet : " << packet->msg << endl;
     }
 
     close(sockfd);
