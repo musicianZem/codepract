@@ -16,6 +16,16 @@
 
 using namespace std;
 
+typedef struct { // Used before send mData
+    uint8_t cmdType; // f:file another:error
+    uint8_t fileName[64];
+}__attribute__((packed)) mCmdT;
+
+typedef struct { // Real Data
+    uint32_t dataLength;
+    uint8_t data[0];
+}__attribute__((packed)) mData;
+
 typedef struct {
     uint32_t msgLength;
     uint8_t msg[0];
