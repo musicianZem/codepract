@@ -81,14 +81,37 @@ int main() {
     int fileBlockSize;
     char fbuf[LENGTH];
     memset(fbuf, 0, sizeof(fbuf));
-
     if( fp == NULL ) {
         exitWithError("FILE NOT FOUND");
     }
 
+    mCmdT cmdData;
+    cmdData.cmdType = 'f';
+    int fileNameLength = strlen(filePath);
+
+    if( fileNameLength >= 64 ) {
+        exitWithError("fileName is Too Long");
+    }
+
+    for(int i=0; i<fileNameLength; i++) {
+        cmdData.fileName[i] = filePath[i];
+    }
+    cmdData.fileName[fileNameLength] = '\0';
+
+    // throw file format first
+    while( write(sockfd, (void *) &cmdData, sizeof(mCmdT)) );
+
+    fseek(fp, 0, SEEK_END);
+    rewind(fp); // set file pointer to begin
+
+    uint32_t fileSize = ftell(fp);
+
+    mData *data = (mData *)malloc( sizeof(uint32_t) + (sizeof(uint8_t) * (fileSize + 1)) );
+
+    data->dataLength = fileSize;
+
     while( !feof(fp) ) {
-        fscanf(fp, "%s", fbuf);
-        cout << strlen(fbuf) << endl;
+        fread(fbuf, sizeof(uint8_t), LENGTH, fp);
         write( sockfd, fbuf, strlen(fbuf) );
         printf("send \"%s\"\n", fbuf);
         memset(fbuf, 0, sizeof(fbuf));
@@ -96,6 +119,5 @@ int main() {
 
     close(sockfd);
 
-    sleep(5);
     return 0;
 }

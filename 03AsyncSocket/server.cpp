@@ -34,7 +34,6 @@ typedef struct {
 
 void exitWithError(const char* errMsg) {
     printf("%s\n", errMsg);
-    p
     exit(-1);
 }
 
@@ -69,7 +68,7 @@ int main() {
     cout << sizeof(mPacket) << "\n";
     listen(sockfd, 5);
     socklen_t clientLen = sizeof(cli_addr);
-    
+
     int new_sockfd = -1;
     while( (new_sockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clientLen)) < 0 );
     fcntl(new_sockfd, F_SETFL, O_NONBLOCK);
@@ -104,20 +103,34 @@ int main() {
         }
     }
 
-    int storeOffset = 0;
-    while( true ) { // get realData
+    while( true ) { // get realData's length
         int msgLength;
         int n = read(new_sockfd, (void *) &msgLength, sizeof(uint32_t));
         if( n < 0 && errno == EAGAIN ) {
             // NO DATA. WAIT.
             continue;
         } else if( n > 0 ) {
-            readData = (mData *)malloc( sizeof(uint32_t) + (sizeof(uint8_t) * (msgLength+1)) );
-            for(int i=sizeof(uint32_t)+1; i<1; i++) { // need to fixed
-                // have to change
-            }
+            realData = (mData *)malloc( sizeof(uint32_t) + (sizeof(uint8_t) * (msgLength+1)) );
         } else {
             // some error occur
+            break;
+        }
+    }
+
+    // #SAVE
+    // have to change.
+    int storeOffset = 0;
+    while( true ) { // get realData.
+        int n = read(new_sockfd, (void *) buffer, sizeof(buffer));
+        if( n < 0 && errno == EAGAIN ) {
+            // NO DATA. WAIT.
+            continue;
+        } else if( n < 0 ) {
+            for(int i = storeOffset; i < storeOffSet + n; i++) {
+                realData->data[i] = buffer[i-storeOffset];
+            }
+        } else {
+            // some error.
             break;
         }
     }
