@@ -17,8 +17,8 @@
 using namespace std;
 
 typedef struct {
-    int msgLength;
-    char msg[0];
+    uint32_t msgLength;
+    uint8_t msg[0];
 }__attribute__((packed)) mPacket;
 
 void exitWithError(const char* errMsg) {
@@ -70,8 +70,8 @@ int main() {
         cout << "Send Message : ";
         string s; getline(cin, s);
         int L = s.length();
-        
-        int packetSize = (sizeof(int) + (sizeof(char) * (L+1)));
+
+        int packetSize = (sizeof(uint32_t) + (sizeof(uint8_t) * (L+1)));
         packet = (mPacket *)malloc(packetSize);
         packet->msgLength = L;
 
@@ -79,9 +79,9 @@ int main() {
             packet->msg[i] = s[i];
         }
 
-        packet->msg[L] = '\0';
+        packet->msg[L] = '\0'; 
 
-        write( sockfd, (void *) packet, packetSize);
+        write( sockfd, packet, packetSize);
         if( s.compare("QUIT") == 0 ) {
             cout << "Quit!" << endl;
             close(sockfd);

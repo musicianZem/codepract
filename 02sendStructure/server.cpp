@@ -16,8 +16,8 @@
 using namespace std;
 
 typedef struct {
-    int msgLength;
-    char msg[0];
+    uint32_t msgLength;
+    uint8_t msg[0];
 }__attribute__((packed)) mPacket;
 
 void exitWithError(const char* errMsg) {
@@ -77,8 +77,8 @@ int main() {
         memset(buf, 0, sizeof(buf));
 
         int msgLength;
-        int n = read(new_sockfd, (void *) &msgLength, sizeof(int));
-        packet = (mPacket *)malloc(sizeof(int) + (sizeof(char)*(msgLength+1)));
+        int n = read(new_sockfd, (void *) &msgLength, sizeof(uint32_t));
+        packet = (mPacket *)malloc(sizeof(uint32_t) + (sizeof(uint8_t) * (msgLength+1)));
         packet->msgLength = msgLength;
         n = read(new_sockfd, (void *)packet->msg, msgLength+1);
 
