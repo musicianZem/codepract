@@ -28,8 +28,9 @@ void exitWithError(const char* errMsg) {
 }
 
 int main() {
+    const int LENGTH = 1024;
     int portNO = 8000;
-    char buffer[256];
+    char buffer[LENGTH];
     struct sockaddr_in serv_addr, cli_addr;
 
     int sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -81,12 +82,19 @@ int main() {
     mPacket *packet;
 
     memset(buffer, 0, sizeof(buffer));
+    FILE *fp = fopen("SaveData.txt", "w");
+    bool endFlag = true;
     while(true) {
-        cout << "!";
-        //memset(buffer, 0, sizeof(buffer));
-        int n = read(new_sockfd, (void *) buffer, sizeof(char)*255);
-        cout << n << " " << buffer << " ";
+        int n = read(new_sockfd, (void *) buffer, sizeof(char)*LENGTH);
+        if( n > 0 ) {
+            endFlag = false;
+            fprintf(fp, "%s\n", buffer);
+            cout << n << " " << buffer << " writed\n";
+        } else {
+            if( !endFlag ) break;
+        }
     }
+    cout << "end of file" << endl;
 
     close(new_sockfd);
     close(sockfd);

@@ -31,9 +31,10 @@ int getSocketDescriptor() {
 }
 
 int main() {
+    const int LENGTH = 1024;
     int sockfd;
     int portNO = 8000;
-    const char* iaddress = "localhost";
+    const char* iaddress = "localhost"; 
 
     size_t bufferSize = 256;
     struct sockaddr_in serv_addr;
@@ -64,18 +65,23 @@ int main() {
 
     char arr[256];
 
-    while( true ) {
-        string s; getline(cin, s);
-        int L = s.length();
+    // Transfer File
+    const char *filePath = "./sendTextFile.txt";
+    FILE *fp = fopen(filePath, "r");
+    int fileBlockSize;
+    char fbuf[LENGTH];
+    memset(fbuf, 0, sizeof(fbuf));
 
-        for(int i=0; i<L; i++) {
-            arr[i] = s[i];
-        }
+    if( fp == NULL ) {
+        exitWithError("FILE NOT FOUND");
+    }
 
-        arr[L] = '\0'; 
-
-        write( sockfd, arr, sizeof(char) * L);
-        printf("send \"%s\"\n", arr);
+    while( !feof(fp) ) {
+        fscanf(fp, "%s", fbuf);
+        cout << strlen(fbuf) << endl;
+        write( sockfd, fbuf, sizeof(fbuf) * strlen(fbuf) );
+        printf("send \"%s\"\n", fbuf);
+        memset(fbuf, 0, sizeof(fbuf));
     }
 
     close(sockfd);
