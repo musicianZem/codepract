@@ -1,3 +1,4 @@
+/* Server */
 // send a structure with socket.
 // 1. Read line with string ( C++ )
 // 2. Create Send Structure.
@@ -16,7 +17,7 @@ using namespace std;
 
 typedef struct {
     int msgLength;
-    char *msg;
+    char msg[0];
 }__attribute__((packed)) mPacket;
 
 void exitWithError(const char* errMsg) {
@@ -56,6 +57,7 @@ int main() {
     cout << "Binding Correctly\n";
     cout << "Waiting for Client.....\n";
 
+    cout << sizeof(mPacket) << "\n";
     listen(sockfd, 5);
     socklen_t clientLen = sizeof(cli_addr);
     int new_sockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clientLen);
@@ -68,15 +70,31 @@ int main() {
     cout << "Client will Send some Message. Answer the Question.\n";
     int pSize = 0;
 
-    mPacket p;
+    mPacket *packet;
 
-    char *buf = new char[101];
+    char buf[5];
     while(true) {
-        memset(buf, 0, sizeof(char*) * 101);
+        memset(buf, 0, sizeof(buf));
 
-        int n = read(new_sockfd, (void *) buf, sizeof(char *) * 101);
+        int msgLength;
+        int n = read(new_sockfd, (void *) &msgLength, sizeof(int));
+        packet = (mPacket *)malloc(sizeof(int) + (sizeof(char)*(msgLength+1)));
+        packet->msgLength = msgLength;
+        n = read(new_sockfd, (void *)packet->msg, msgLength+1);
+
+        if( msgLength == 4 && packet->msg[0] == 'Q' && packet->msg[1] == 'U' && packet->msg[2]
+            == 'I' && packet->msg[3] == 'T' ) {
+            cout << "Client Exit Program" << endl;
+            close(new_sockfd);
+            close(sockfd);
+            break;
+        }
+        cout << packet->msgLength << " \"" << packet->msg << "\"\n";
+    
+        buf[4] = '\0';
+
         printf(">>%s\n", buf);
-
+        free(packet);
     }
 
     close(new_sockfd);

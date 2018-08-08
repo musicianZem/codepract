@@ -1,3 +1,4 @@
+/* Client */
 // send a structure with socket.
 // 1. Read line with string ( C++ )
 // 2. Create Send Structure.
@@ -17,7 +18,7 @@ using namespace std;
 
 typedef struct {
     int msgLength;
-    char *msg;
+    char msg[0];
 }__attribute__((packed)) mPacket;
 
 void exitWithError(const char* errMsg) {
@@ -58,45 +59,39 @@ int main() {
 
     cout << "Connected Server. Welcome\n";
 
-
-
-
-
-
-
     int msgID = 0;
-    mPacket packet;
+    mPacket *packet;
 
-    //char *arr = new char[101];
+    char arr[101];
 
     while( true ) {
+        cout << "-- OPTION --\n";
+        cout << "QUIT : quit socket\n";
+        cout << "Send Message : ";
         string s; getline(cin, s);
         int L = s.length();
-
-        //char *arr = new char[L+1];
-        packet.msg = new char[L+1];
+        
+        int packetSize = (sizeof(int) + (sizeof(char) * (L+1)));
+        packet = (mPacket *)malloc(packetSize);
+        packet->msgLength = L;
 
         for(int i=0; i<L; i++) {
-            //arr[i] = s[i];
-            packet.msg = new char[L+1];
+            packet->msg[i] = s[i];
         }
 
-        //arr[L] = '\0';
-        packet.msg[L] = '\0';
+        packet->msg[L] = '\0';
 
-        //printf("%s is inserted\n", arr);
-        printf("%s is inserted\n", packet.msg);
+        write( sockfd, (void *) packet, packetSize);
+        if( s.compare("QUIT") == 0 ) {
+            cout << "Quit!" << endl;
+            close(sockfd);
+            break;
+        }
+        printf("send \"%s\"\n", packet->msg);
 
-        //write( sockfd, (void *) arr, L);
-        write( sockfd, (void *) packet.msg, L);
+        free( packet );
     }
 
     close(sockfd);
     return 0;
 }
-
-
-
-
-
-
