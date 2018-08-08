@@ -79,11 +79,13 @@ int main() {
     while( !feof(fp) ) {
         fscanf(fp, "%s", fbuf);
         cout << strlen(fbuf) << endl;
-        write( sockfd, fbuf, sizeof(fbuf) * strlen(fbuf) );
+        write( sockfd, fbuf, strlen(fbuf) );
         printf("send \"%s\"\n", fbuf);
         memset(fbuf, 0, sizeof(fbuf));
     }
 
     close(sockfd);
+
+    sleep(5);
     return 0;
 }

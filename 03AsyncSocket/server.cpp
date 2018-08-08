@@ -83,15 +83,20 @@ int main() {
 
     memset(buffer, 0, sizeof(buffer));
     FILE *fp = fopen("SaveData.txt", "w");
-    bool endFlag = true;
     while(true) {
         int n = read(new_sockfd, (void *) buffer, sizeof(char)*LENGTH);
-        if( n > 0 ) {
-            endFlag = false;
-            fprintf(fp, "%s\n", buffer);
+        if(n < 0 && errno == EAGAIN) {
+            // If this condition passes, there is no data to be read
+            continue;
+        }
+        else if(n > 0) {
+            fprintf(fp, "%s\r\n", buffer);
             cout << n << " " << buffer << " writed\n";
-        } else {
-            if( !endFlag ) break;
+            // Otherwise, you're good to go and buffer should contain "count" bytes.
+        }
+        else {
+            break;
+            // Some other error occurred during read.
         }
     }
     cout << "end of file" << endl;
