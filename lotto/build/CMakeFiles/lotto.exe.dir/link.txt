@@ -1,0 +1,1 @@
+/usr/bin/c++    -rdynamic CMakeFiles/lotto.exe.dir/lotto.cpp.o  -o lotto.exe 

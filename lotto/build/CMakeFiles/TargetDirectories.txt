@@ -1,0 +1,3 @@
+/home/zem/gitProjects/privacy/codepract/lotto/build/CMakeFiles/rebuild_cache.dir
+/home/zem/gitProjects/privacy/codepract/lotto/build/CMakeFiles/lotto.exe.dir
+/home/zem/gitProjects/privacy/codepract/lotto/build/CMakeFiles/edit_cache.dir

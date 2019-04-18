@@ -1,0 +1,3 @@
+/home/zem/gitProjects/privacy/codepract/CMakeTest/build/CMakeFiles/rebuild_cache.dir
+/home/zem/gitProjects/privacy/codepract/CMakeTest/build/CMakeFiles/hello.dir
+/home/zem/gitProjects/privacy/codepract/CMakeTest/build/CMakeFiles/edit_cache.dir
